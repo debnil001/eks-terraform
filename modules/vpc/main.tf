@@ -61,7 +61,7 @@ resource "aws_route_table" "public_route_table" {
 #associate the public subnets with public route table
 resource "aws_route_table_association" "public_route_table_association" {
     count = length(var.public_subnet_cidrs)
-    subnet_id = aws_subnet.public[count.index].id
+    subnet_id = aws_subnet.public_subnet[count.index].id
     route_table_id = aws_route_table.public_route_table.id
 }
 #create elastic IPs in public subnets for NAT gateways
@@ -76,7 +76,7 @@ resource "aws_eip" "nat" {
 resource "aws_nat_gateway" "main" {
     count = length(var.public_subnet_cidrs)
     allocation_id = aws_eip.nat[count.index].id
-    subnet_id = aws_subnet.public[count.index].id
+    subnet_id = aws_subnet.public_subnet[count.index].id
     tags = {
         Name = "${var.cluster_name}-nat-gateway-${count.index + 1}"
     }
@@ -97,6 +97,6 @@ resource "aws_route_table" "private_route_table" {
 #associate the private subnets with private route tables
 resource "aws_route_table_association" "private_route_table_association" {
     count = length(var.private_subnet_cidrs)
-    subnet_id = aws_subnet.private[count.index].id
+    subnet_id = aws_subnet.private_subnet[count.index].id
     route_table_id = aws_route_table.private_route_table[count.index].id
 }
