@@ -83,6 +83,7 @@ resource "aws_nat_gateway" "main" {
 }
 #create private route tables and associate with NAT gateways
 resource "aws_route_table" "private_route_table" {
+    count  = length(var.private_subnet_cidrs)
     vpc_id = aws_vpc.main.id
 
     route {
